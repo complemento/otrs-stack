@@ -55,3 +55,7 @@ volumes:
   mysql-data:
     driver: local
 
+networks:
+  web:
+    external:
+      name: web
