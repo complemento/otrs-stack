@@ -27,6 +27,9 @@ services:
       - traefik.frontend.rule=Host:${WEBSERVER_FQDN}
       - traefik.protocol=http
       - traefik.docker.network=web
+    networks:
+      - web
+      - default
 
   database:
     image: mysql:5.7
