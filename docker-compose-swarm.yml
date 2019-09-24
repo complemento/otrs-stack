@@ -6,7 +6,6 @@ services:
     volumes:
       - otrs-data:/opt/otrs
       - otrs-backups:/app-backups
-    restart: unless-stopped
     environment:
       APP_DatabaseType: mysql
       APP_DatabaseHost: database
@@ -33,7 +32,6 @@ services:
     image: mysql:5.7
     volumes:
       - mysql-data:/var/lib/mysql
-    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: otrs
       MYSQL_DATABASE: otrs
