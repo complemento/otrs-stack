@@ -1,0 +1,49 @@
+version: '2'
+
+services:
+  webserver:
+    image: ligero/otrs-itsm
+    volumes:
+      - otrs-data:/opt/otrs
+      - otrs-backups:/app-backups
+    restart: unless-stopped
+    environment:
+      APP_DatabaseType: mysql
+      APP_DatabaseHost: database
+      APP_Database: otrs
+      APP_DatabaseUser: otrs
+      APP_DatabasePw: otrs
+      APP_CustomerID: otrs
+      APP_NodeID: 1
+      APP_FQDN: localhost
+      START_BACKEND: 1
+      DEBUG_MODE: 0
+      ROOT_PASSWORD: otrs
+    ports:
+      - 80:80
+
+  database:
+    image: mysql:5.7
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: otrs
+      MYSQL_DATABASE: otrs
+      MYSQL_USER: otrs
+      MYSQL_PASSWORD: otrs
+    command:
+      - --max_allowed_packet=64M
+      - --innodb_log_file_size=269331648
+      - --query_cache_size=36737518
+      - --character_set_server=utf8
+      - --bind-address=0.0.0.0
+
+volumes:
+  otrs-data:
+    driver: local
+  otrs-backups:
+    driver: local
+  mysql-data:
+    driver: local
+
