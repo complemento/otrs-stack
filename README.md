@@ -30,4 +30,4 @@ O ambiente será configurado e funcionará na porta 80
 
 # Repositório
 
-A imagem base está em https://hub.docker.com/ligero/otrs-itsm
+A imagem base está em https://hub.docker.com/r/ligero/otrs-itsm
