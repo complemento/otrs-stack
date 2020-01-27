@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  server:
+    image: traefik:v1.7
+    command: 
+      - --api 
+      - --docker
+      - --docker.swarmMode
+      - --docker.watch=true 
+      - --docker.exposedbydefault=false 
+      - --docker.domain=${DOMAIN} 
+      - --docker.network=web 
+      - --debug=true 
+      - --logLevel=INFO
+      - --accessLog.filePath="/log/access.log"
+      - --defaultentrypoints=https,http
+      - --entryPoints=Name:http Address::80 Redirect.EntryPoint:https
+      - --entryPoints=Name:https Address::443 TLS
+      - --acme
+      - --acme.email=${ACME_EMAIL}
+      - --acme.storage=/certs/acme.json
+      - --acme.entryPoint=https
+      - --acme.onHostRule=true
+      - --acme.httpchallenge.entrypoint=http
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - certs:/certs
+      - log:/log
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - web
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  web:
+    external:
+      name: web
+
+volumes:
+  log:
+    driver: local
+  certs:
+    driver: local

@@ -6,7 +6,6 @@ services:
     volumes:
       - otrs-data:/opt/otrs
       - otrs-backups:/app-backups
-    restart: unless-stopped
     environment:
       APP_DatabaseType: mysql
       APP_DatabaseHost: database
@@ -19,14 +18,23 @@ services:
       START_BACKEND: 1
       DEBUG_MODE: 0
       ROOT_PASSWORD: otrs
-    ports:
-      - 80:80
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+      - traefik.enable=true
+      - traefik.port=80
+      - traefik.frontend.rule=Host:${WEBSERVER_FQDN}
+      - traefik.protocol=http
+      - traefik.docker.network=web
+    networks:
+      - web
+      - default
 
   database:
     image: mysql:5.7
     volumes:
       - mysql-data:/var/lib/mysql
-    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: otrs
       MYSQL_DATABASE: otrs
@@ -47,3 +55,7 @@ volumes:
   mysql-data:
     driver: local
 
+networks:
+  web:
+    external:
+      name: web
