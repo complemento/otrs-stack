@@ -47,6 +47,27 @@ services:
       - --character_set_server=utf8
       - --bind-address=0.0.0.0
 
+  sftp:
+     image: atmoz/sftp
+     environment:
+       SFTP_USERS: "otrs:UAvvXsqYuOsnk:1000:33:"
+     volumes:
+       - otrs-data:/home/otrs/opt/otrs/
+     #ports:
+     #  - 2200:22
+     deploy:
+      mode: replicated
+      replicas: 0
+      resources:
+        limits:
+          cpus: '4'
+          memory: 2G
+        reservations:
+          cpus: '0.1'
+          memory: 300M
+     depends_on:
+       - webserver
+       
 volumes:
   otrs-data:
     driver: local
